@@ -38,7 +38,7 @@ Chromosome::mutate()
   while (indexOne == indexTwo){
     indexTwo = distribution(generator);
   }
-  order_[indexOne], order_[indexTwo] = order_[indexTwo], order_[indexOne]
+  order_[indexOne], order_[indexTwo] = order_[indexTwo], order_[indexOne];
   assert(is_valid());
 }
 
@@ -101,8 +101,7 @@ double
 Chromosome::get_fitness() const
 {
     double pathDistance = cities_ptr_->total_path_distance(order_);
-    double doubleMax = std::numeric_limits<double>::max;
-    return (doubleMax - pathDistance);
+    return (1/pathDistance);
   // Add your implementation here
 }
 

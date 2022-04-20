@@ -11,6 +11,10 @@
 Deme::Deme(const Cities* cities_ptr, unsigned pop_size, double mut_rate)
 {
   // Add your implementation here
+  for (unsigned i; i <= pop-size, i++){
+    pop_.push_back(new Chromosome(cities_ptr)));
+  }
+  mut_rate_ = mut_rate;
 }
 
 // Clean up as necessary
@@ -35,11 +39,44 @@ void Deme::compute_next_generation()
 const Chromosome* Deme::get_best() const
 {
   // Add your implementation here
+  Chromosome* bestChromosome;
+  bool firstFlag = True;
+  for (Chromosome* i : pop_){
+    if (firstFlag == true){
+      bestChromosome = i;
+      firstFlag = false;
+    }
+    else{
+      if (i->get_fitness() > bestChromosome->get_fitness()){
+        bestChromosome = i;
+      } //close if
+    } //close else
+  } //close for
+  return bestChromosome;
 }
 
 // Randomly select a chromosome in the population based on fitness and
 // return a pointer to that chromosome.
 Chromosome* Deme::select_parent()
 {
-  // Add your implementation here
+  //Get your total fitness value
+  double totalFitness = std::accumulate(pop_, pop_.back());
+  //create a vector to contain the probabilities of each result
+  std::vector<std::pair<double, double> probVector;
+  /*Probability values will be stored as pairs representing cumulativeranges (a chromosome with a value of 99 and 
+  a chromosome with a value of 1 will be represented as (0,0.99) and (0.99,1)) Not sure if this is the best way to 
+  do it, but this should let us generate a random number then check what range its in to pick the chromosome
+  Feel free to change if you have a better way to do this */
+  double currentProb = 0.0;
+  for (auto i : pop_){
+    double fitness = i->get_fitness;
+    double fitnessProb = fitness/totalFitness
+    double cumulativeFitnessProb = currentProb + fitnessProb;
+    probVector.push_back(std::pair<double, double>(currentProb, cumulativeFitnessProb));
+    currentProb += fitnessProb;
+  }
+  //generate random number from 0 to 1
+  //find the range in your vector that includes that number
+  //return the chromosome at that index
+  
 }
