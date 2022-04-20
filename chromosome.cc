@@ -31,12 +31,12 @@ void
 Chromosome::mutate()
 {
   // Add your implementation here
-  asset(order_.size() > 1) //sanity check
-  std::uniform_int_distribution<unsigned> distribution(0, order_.size()-1)
-  unsigned indexOne = distribution(generator);
-  unsigned indexTwo = distribution(generator);
+  assert(order_.size() > 1); //sanity check
+  std::uniform_int_distribution<unsigned> distribution(0, order_.size()-1);
+  unsigned indexOne = distribution(generator_);
+  unsigned indexTwo = distribution(generator_);
   while (indexOne == indexTwo){
-    indexTwo = distribution(generator);
+    indexTwo = distribution(generator_);
   }
   order_[indexOne], order_[indexTwo] = order_[indexTwo], order_[indexOne];
   assert(is_valid());
@@ -48,12 +48,16 @@ Chromosome::mutate()
 std::pair<Chromosome*, Chromosome*>
 Chromosome::recombine(const Chromosome* other)
 {
+  //Generate a random index of order_ from 0 to its second to last item
   std::uniform_int_distribution<unsigned> distribution(0, order_.size()-2);
-  unsigned lowerIndex = distribution(generator);
-  std::uniform_int_distribution<unsigned> distribution(lowerIndex+1, order_.size());
-  unsigned higherIndex = distribution(generator);
+  unsigned lowerIndex = distribution(generator_);
+  //Generate a random index of order_ from that lower index to the maximum index
+  std::uniform_int_distribution<unsigned> distributionTwo(lowerIndex+1, order_.size());
+  unsigned higherIndex = distributionTwo(generator_);
+  //Use these two indexes to crossover
   Chromosome* childOne = create_crossover_child(this, other, lowerIndex, higherIndex);
   Chromosome* childTwo = create_crossover_child(other, this, lowerIndex, higherIndex);
+  //sanity check
   assert(is_valid());
   assert(other->is_valid());
   assert(childOne->is_valid());
@@ -124,7 +128,9 @@ Chromosome::is_valid() const
 bool
 Chromosome::is_in_range(unsigned value, unsigned begin, unsigned end) const
 {
-  valueCount = std::count(order_[begin], order[end], value);
+  unsigned int* beginPointer = &(begin);
+  unsigned int* endPointer = &(end);
+  int valueCount = std::count(beginPointer, endPointer, value);
   assert(valueCount < 2);
   if (valueCount == 0){
     return false;
