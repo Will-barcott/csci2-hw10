@@ -11,8 +11,8 @@
 Deme::Deme(const Cities* cities_ptr, unsigned pop_size, double mut_rate)
 {
   // Add your implementation here
-  for (unsigned i; i <= pop-size, i++){
-    pop_.push_back(new Chromosome(cities_ptr)));
+  for (unsigned i; i <= pop_size; i++){
+    pop_.push_back(new Chromosome(cities_ptr));
   }
   mut_rate_ = mut_rate;
 }
@@ -34,13 +34,13 @@ void Deme::compute_next_generation()
 {
   // Add your implementation here
 }
-
+      
 // Return a copy of the chromosome with the highest fitness.
 const Chromosome* Deme::get_best() const
 {
   // Add your implementation here
   Chromosome* bestChromosome;
-  bool firstFlag = True;
+  bool firstFlag = true;
   for (Chromosome* i : pop_){
     if (firstFlag == true){
       bestChromosome = i;
@@ -69,14 +69,25 @@ Chromosome* Deme::select_parent()
   Feel free to change if you have a better way to do this */
   double currentProb = 0.0;
   for (auto i : pop_){
-    double fitness = i->get_fitness;
-    double fitnessProb = fitness/totalFitness
+    double fitness = i->get_fitness();
+    double fitnessProb = fitness/totalFitness;
     double cumulativeFitnessProb = currentProb + fitnessProb;
     probVector.push_back(std::pair<double, double>(currentProb, cumulativeFitnessProb));
     currentProb += fitnessProb;
   }
-  //generate random number from 0 to 1
+  //generate random number from 0 to 1 - not the RNG we've been using, should change later
+  std::srand(843190857);
+  double rand = rand();
   //find the range in your vector that includes that number
+  int indexSelected = 0;
+  for (auto i : probVector){
+    if ((std::get<0>(i) < rand) & (std::get<1>(i) > rand)){
+      break;
+    }
+    indexSelected++;
+  }
   //return the chromosome at that index
-  
+  Chromosome* selectedParent = pop_[indexSelected];
+  return selectedParent;
 }
+ 
