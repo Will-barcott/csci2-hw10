@@ -22,7 +22,6 @@ Chromosome::Chromosome(const Cities* cities_ptr)
 // Clean up as necessary
 Chromosome::~Chromosome()
 {
-  assert(is_valid());
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -106,7 +105,6 @@ Chromosome::get_fitness() const
 {
     double pathDistance = cities_ptr_->total_path_distance(order_);
     return (1/pathDistance);
-  // Add your implementation here
 }
 
 // A chromsome is valid if it has no repeated values in its permutation,
@@ -114,12 +112,10 @@ Chromosome::get_fitness() const
 bool
 Chromosome::is_valid() const
 {
-  // Add your implementation here
-  Cities::permutation_t newVector;
-  for (unsigned int i = 0; i < order_.size(); i++){
-      newVector.push_back(i);
-  }
-  return std::is_permutation(newVector.begin(), newVector.end(), order_.end());
+  int FILL_SIZE = order_.size();
+  int compare[FILL_SIZE];    //Ordered sequence from 0 to (ordered.size()-1)
+  std::iota(compare, compare+FILL_SIZE, 0);    //Fill compare sequence.
+  return std::is_permutation(compare, compare+FILL_SIZE, order_.end());
 }
 
 // Find whether a certain value appears in a given range of the chromosome.
