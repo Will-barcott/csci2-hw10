@@ -120,10 +120,9 @@ Chromosome::get_fitness() const
 bool
 Chromosome::is_valid() const
 {
-  int FILL_SIZE = order_.size();
-  int compare[FILL_SIZE];    //Ordered sequence from 0 to (ordered.size()-1)
-  std::iota(compare, compare+FILL_SIZE, 0);    //Fill compare sequence.
-  return std::is_permutation(compare, compare+FILL_SIZE, order_.end());
+  std::vector<int> compare;
+  std::iota(compare.begin(), compare.end(), 0);    //Fill compare sequence.
+  return std::is_permutation(compare.begin(), compare.end(), order_.end());
 }
 
 // Find whether a certain value appears in a given range of the chromosome.
