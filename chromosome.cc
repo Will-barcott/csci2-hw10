@@ -110,8 +110,8 @@ Chromosome::create_crossover_child(const Chromosome* p1, const Chromosome* p2,
 double
 Chromosome::get_fitness() const
 {
-    double pathDistance = cities_ptr_->total_path_distance(order_);
-    return (1/pathDistance);
+  double pathDistance = cities_ptr_->total_path_distance(order_);
+  return (1.0/pathDistance);
 }
 
 // A chromsome is valid if it has no repeated values in its permutation,
