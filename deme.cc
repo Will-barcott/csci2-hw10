@@ -38,7 +38,7 @@ void Deme::compute_next_generation()
 {
   std::vector<std::pair<Chromosome*, Chromosome*>> chromosome_storage;
   std::uniform_real_distribution<double> distribution(0.0,1.0);
-  for (int i = 0; i < pop_.size()/2; i++) {
+  for (std::size_t i = 0; i < pop_.size()/2; i++) {
     //Step 1: Select two parents.
     Chromosome* p1 = select_parent(); Chromosome* p2 = select_parent();
     //Step 2: Mutate or not.
