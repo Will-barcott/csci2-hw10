@@ -7,7 +7,7 @@
 
 #include "chromosome.hh"
 #include "cities.hh"
-
+#include <numeric>
 #include <random>
 
 class Deme {

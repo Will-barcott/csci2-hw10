@@ -10,7 +10,6 @@
 // Also receives a mutation rate in the range [0-1].
 Deme::Deme(const Cities* cities_ptr, unsigned pop_size, double mut_rate)
 {
-  // Add your implementation here
   for (unsigned i; i <= pop_size; i++){
     pop_.push_back(new Chromosome(cities_ptr));
   }
@@ -20,7 +19,10 @@ Deme::Deme(const Cities* cities_ptr, unsigned pop_size, double mut_rate)
 // Clean up as necessary
 Deme::~Deme()
 {
-  // Add your implementation here
+  for (auto i: pop_) {
+    delete i;   //Deallocate memory from each element pointed to in pop_
+  }
+  pop_.clear(); //Erases elements in pop_
 }
 
 // Evolve a single generation of new chromosomes, as follows:
@@ -34,25 +36,18 @@ void Deme::compute_next_generation()
 {
   // Add your implementation here
 }
-      
+
+//Functor comparison object for best fitness.
+struct compare_fitness {
+  bool operator() (const Chromosome* p1, const Chromosome* p2) {
+    return p1->get_fitness() < p2->get_fitness();
+  }
+}fit_cmp;
+
 // Return a copy of the chromosome with the highest fitness.
 const Chromosome* Deme::get_best() const
 {
-  // Add your implementation here
-  Chromosome* bestChromosome;
-  bool firstFlag = true;
-  for (Chromosome* i : pop_){
-    if (firstFlag == true){
-      bestChromosome = i;
-      firstFlag = false;
-    }
-    else{
-      if (i->get_fitness() > bestChromosome->get_fitness()){
-        bestChromosome = i;
-      } //close if
-    } //close else
-  } //close for
-  return bestChromosome;
+  return *std::max_element(pop_.cbegin(), pop_.cend(), fit_cmp);
 }
 
 // Randomly select a chromosome in the population based on fitness and
@@ -62,7 +57,7 @@ Chromosome* Deme::select_parent()
   //Get your total fitness value
   double totalFitness = std::accumulate(pop_, pop_.back());
   //create a vector to contain the probabilities of each result
-  std::vector<std::pair<double, double> probVector;
+  std::vector<std::pair<double, double>> probVector;
   /*Probability values will be stored as pairs representing cumulativeranges (a chromosome with a value of 99 and 
   a chromosome with a value of 1 will be represented as (0,0.99) and (0.99,1)) Not sure if this is the best way to 
   do it, but this should let us generate a random number then check what range its in to pick the chromosome
