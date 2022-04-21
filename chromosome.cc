@@ -39,11 +39,9 @@ Chromosome::~Chromosome()
 void
 Chromosome::mutate()
 {
-  int ORDER_SIZE = order_.size();
-  assert(ORDER_SIZE > 1); //sanity check
-  int buffet[ORDER_SIZE];
-  std::iota(buffet, buffet+ORDER_SIZE, 0);
-  std::shuffle(buffet, buffet+ORDER_SIZE, generator_);
+  std::vector<int> buffet;
+  std::iota(buffet.begin(), buffet.end(), 0);
+  std::shuffle(buffet.begin(), buffet.end(), generator_);
   int idx_one = buffet[0];
   int idx_two = buffet[1];
   
