@@ -28,7 +28,7 @@ Deme::~Deme()
 }
 
 // Evolve a single generation of new chromosomes, as follows:
-// We select pop_size/2 pairs of chromosomes (using the select() method below).
+// We select pop_size/2 pairs of chromosomes (using the select_parent() method below).
 // Each chromosome in the pair can be randomly selected for mutation, with
 // probability mut_rate, in which case it calls the chromosome mutate() method.
 // Then, the pair is recombined once (using the recombine() method) to generate
@@ -36,7 +36,33 @@ Deme::~Deme()
 // After we've generated pop_size new chromosomes, we delete all the old ones.
 void Deme::compute_next_generation()
 {
-  // Add your implementation here
+  std::vector<std::pair<Chromosome*, Chromosome*>> chromosome_storage;
+  std::uniform_real_distribution<double> distribution(0.0,1.0);
+  for (int i = 0; i < pop_.size()/2; i++) {
+    //Step 1: Select two parents.
+    Chromosome* p1 = select_parent(); Chromosome* p2 = select_parent();
+    //Step 2: Mutate or not.
+    auto mutate1 = (distribution(generator_) < mut_rate_);
+    if (mutate1) {
+      p1->mutate();
+    }
+    auto mutate2 = (distribution(generator_) < mut_rate_);
+    if (mutate2) {
+      p2->mutate();
+    }
+    //Step 3: Recombine parents. Store children.
+    chromosome_storage.push_back(p1->recombine(p2));
+  }
+
+  //Step 4: Replace parents.
+  for (auto i : pop_) {
+    delete i;
+  }
+  pop_.clear();
+  for (auto i : chromosome_storage) {
+    pop_.push_back(i.first);
+    pop_.push_back(i.second);
+  }
 }
 
 //Functor comparison object for best fitness.
@@ -75,6 +101,8 @@ Chromosome* Deme::select_parent()
   std::uniform_real_distribution<double> distribution (0.0, totalFitness);
   //Generate random number from 0 - total fitness, and then normalize.
   double random_selection = distribution(generator_) / totalFitness;
+
+  //Find the winning Chromosome based on rng.
   int winner;
   for (int i = 0; i < POP_SIZE; i++) {
     if (prob_table[i] < random_selection) {
