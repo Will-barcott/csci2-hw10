@@ -9,6 +9,8 @@
 #include "cities.hh"
 #include <numeric>
 #include <random>
+#include <chrono>
+#include <cassert>
 
 class Deme {
  public:

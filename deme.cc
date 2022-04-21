@@ -14,6 +14,8 @@ Deme::Deme(const Cities* cities_ptr, unsigned pop_size, double mut_rate)
     pop_.push_back(new Chromosome(cities_ptr));
   }
   mut_rate_ = mut_rate;
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  generator_ = std::default_random_engine(seed);
 }
 
 // Clean up as necessary
@@ -47,42 +49,31 @@ struct compare_fitness {
 // Return a copy of the chromosome with the highest fitness.
 const Chromosome* Deme::get_best() const
 {
+  //Dereference iterator of max element based on fitness.
   return *std::max_element(pop_.cbegin(), pop_.cend(), fit_cmp);
 }
+
+//Pass this function to accumulate to get total population fitness.
+double sum_fitness (const Chromosome* c1, const Chromosome* c2) { return c1->get_fitness() + c2->get_fitness(); }
 
 // Randomly select a chromosome in the population based on fitness and
 // return a pointer to that chromosome.
 Chromosome* Deme::select_parent()
 {
-  //Get your total fitness value
-  double totalFitness = std::accumulate(pop_, pop_.back());
-  //create a vector to contain the probabilities of each result
-  std::vector<std::pair<double, double>> probVector;
-  /*Probability values will be stored as pairs representing cumulativeranges (a chromosome with a value of 99 and 
-  a chromosome with a value of 1 will be represented as (0,0.99) and (0.99,1)) Not sure if this is the best way to 
-  do it, but this should let us generate a random number then check what range its in to pick the chromosome
-  Feel free to change if you have a better way to do this */
-  double currentProb = 0.0;
-  for (auto i : pop_){
-    double fitness = i->get_fitness();
-    double fitnessProb = fitness/totalFitness;
-    double cumulativeFitnessProb = currentProb + fitnessProb;
-    probVector.push_back(std::pair<double, double>(currentProb, cumulativeFitnessProb));
-    currentProb += fitnessProb;
+  int POP_SIZE = pop_.size();
+  //Find total population fitness.
+  double totalFitness = std::accumulate(pop_.begin(), pop_.end(), 0, sum_fitness);
+  //Create table of probabilities for each vector. Maintaining vector order is critical. Could also use a std::map...
+  double prob_table[POP_SIZE] = {0};
+  //Calculate probability of selection for each Chromosome in pop_.
+  for (int i = 0; i < POP_SIZE; i++) {
+    prob_table[i] = prob_table[i-1] + (pop_[i]->get_fitness() / totalFitness);
   }
-  //generate random number from 0 to 1 - not the RNG we've been using, should change later
-  std::srand(843190857);
-  double rand = rand();
-  //find the range in your vector that includes that number
-  int indexSelected = 0;
-  for (auto i : probVector){
-    if ((std::get<0>(i) < rand) & (std::get<1>(i) > rand)){
-      break;
-    }
-    indexSelected++;
-  }
-  //return the chromosome at that index
-  Chromosome* selectedParent = pop_[indexSelected];
-  return selectedParent;
+  assert(prob_table[POP_SIZE - 1] < 1.0); //Sanity check, no probabilities > 1.
+  std::uniform_real_distribution<double> distribution (0.0, totalFitness);
+  double random_selection = distribution(generator_);
+  auto winner = *std::find_if(prob_table, prob_table+POP_SIZE, [](const auto i) { return i < random_selection; });
+
+  return pop_[winner];
 }
  
