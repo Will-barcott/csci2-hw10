@@ -2,10 +2,6 @@
  * Implementation for Chromosome class
  */
 
-#include <algorithm>
-#include <cassert>
-#include <random>
-#include <limits>
 #include "chromosome.hh"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -39,7 +35,7 @@ Chromosome::~Chromosome()
 void
 Chromosome::mutate()
 {
-  std::vector<int> buffet;
+  std::vector<int> buffet(order_.size(), 0);
   std::iota(buffet.begin(), buffet.end(), 0);
   std::shuffle(buffet.begin(), buffet.end(), generator_);
   int idx_one = buffet[0];
