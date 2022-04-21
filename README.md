@@ -20,6 +20,7 @@ To generate ```randomized.tsv```:
 ```
 $ ./tsp challenge.tsv | tee randomized.tsv
 ```
+Finally, these two files were plotted with ```gnuplot``` and the resulting gif is included.
 
 ## Design Commentary:
 Overall this was an exercise of how many standard library functions we could use.
