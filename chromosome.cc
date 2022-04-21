@@ -134,14 +134,10 @@ Chromosome::is_valid() const
 bool
 Chromosome::is_in_range(unsigned value, unsigned begin, unsigned end) const
 {
-  unsigned int* beginPointer = &(begin);
-  unsigned int* endPointer = &(end);
-  int valueCount = std::count(beginPointer, endPointer, value);
-  assert(valueCount < 2);
-  if (valueCount == 0){
-    return false;
+  for (int i = begin; i < end; i++) {
+    if (order_[i] == value) {
+      return true;
+    }
   }
-  else{
-    return true;
-  }
+  return false;
 }
