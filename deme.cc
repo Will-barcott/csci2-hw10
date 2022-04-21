@@ -73,7 +73,8 @@ Chromosome* Deme::select_parent()
   }
   assert(prob_table[POP_SIZE - 1] < 1.0); //Sanity check, no probabilities > 1.
   std::uniform_real_distribution<double> distribution (0.0, totalFitness);
-  double random_selection = distribution(generator_);
+  //Generate random number from 0 - total fitness, and then normalize.
+  double random_selection = distribution(generator_) / totalFitness;
   auto winner = *std::find_if(prob_table, prob_table+POP_SIZE, [](const auto i) { return i < random_selection; });
 
   return pop_[winner];
