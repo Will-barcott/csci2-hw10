@@ -11,6 +11,7 @@
 #include <random>
 #include <chrono>
 #include <cassert>
+#include <iostream>
 
 class Deme {
  public:

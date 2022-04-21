@@ -9,11 +9,11 @@
 // Generate a Deme of the specified size with all-random chromosomes.
 // Also receives a mutation rate in the range [0-1].
 Deme::Deme(const Cities* cities_ptr, unsigned pop_size, double mut_rate)
+  : mut_rate_(mut_rate)
 {
-  for (unsigned i; i <= pop_size; i++){
+  for (unsigned i = 0; i < pop_size; i++){
     pop_.push_back(new Chromosome(cities_ptr));
   }
-  mut_rate_ = mut_rate;
   unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
   generator_ = std::default_random_engine(seed);
 }
@@ -24,7 +24,6 @@ Deme::~Deme()
   for (auto i: pop_) {
     delete i;   //Deallocate memory from each element pointed to in pop_
   }
-  pop_.clear(); //Erases elements in pop_
 }
 
 // Evolve a single generation of new chromosomes, as follows:
@@ -87,28 +86,25 @@ Chromosome* Deme::select_parent()
   //Find total population fitness.
   auto sum_fitness = [](double sum, const Chromosome* c) { return sum + c->get_fitness(); };
   double totalFitness = std::accumulate(pop_.begin(), pop_.end(), 0.0, sum_fitness);
+
   //Create table of probabilities for each vector. Maintaining vector order is critical. Could also use a std::map...
   std::vector<double> prob_table(POP_SIZE, 0);
   //Calculate probability of selection for each Chromosome in pop_.
-  //Fill the first element in the table.
   prob_table[0] = pop_[0]->get_fitness() / totalFitness;
   for (int i = 1; i < POP_SIZE; i++) {
     prob_table[i] = prob_table[i-1] + (pop_[i]->get_fitness() / totalFitness);
   }
-  assert(prob_table[POP_SIZE - 1] == 1.0); //Sanity check, no probabilities > 1.
+
   std::uniform_real_distribution<double> distribution (0.0, totalFitness);
   //Generate random number from 0 - total fitness, and then normalize.
   double random_selection = distribution(generator_) / totalFitness;
 
   //Find the winning Chromosome based on rng.
-  int winner;
   for (int i = 0; i < POP_SIZE; i++) {
-    if (prob_table[i] < random_selection) {
-      winner = i;
-      continue;
+    if (random_selection < prob_table[i]) {
+      return pop_[i];
     }
   }
-
-  return pop_[winner];
+  return nullptr;
 }
  
