@@ -34,9 +34,6 @@ class TestChromosome : public Chromosome {
 
     void test_mutate() {
         Cities::permutation_t testvec = order_;
-        for (std::size_t i = 0; i < order_.size(); i++) {
-            std::cout << testvec[i] << " | " << order_[i] << "\n";
-        }
         mutate();
 
         assert(testvec != order_);

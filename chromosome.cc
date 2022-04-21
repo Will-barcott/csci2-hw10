@@ -38,27 +38,15 @@ Chromosome::mutate()
   std::vector<int> buffet(order_.size(), 0);
   std::iota(buffet.begin(), buffet.end(), 0);
   std::shuffle(buffet.begin(), buffet.end(), generator_);
-  std::cout << "Buffet: \t";
-  for (auto i : buffet) {
-    std::cout << i << ", ";
-  }
-  std::cout << "\n";
+
   int idx_one = buffet[0];
   int idx_two = buffet[1];
-  std::cout << "Order_: \t";
-  for (auto i : order_) {
-    std::cout << i << ", ";
-  }
-  std::cout << "\n";
+
   auto first = order_.at(idx_one);
   order_.at(idx_one) = order_.at(idx_two);
   order_.at(idx_two) = first;
-  std::cout << "order_': \t";
-  for (auto i : order_) {
-    std::cout << i << ", ";
-  }
-  std::cout << "\n";
-  assert(is_valid());
+
+  assert(is_valid()); //Sanity check
 }
 
 //////////////////////////////////////////////////////////////////////////////
