@@ -79,18 +79,16 @@ const Chromosome* Deme::get_best() const
   return *std::max_element(pop_.cbegin(), pop_.cend(), fit_cmp);
 }
 
-//Pass this function to accumulate to get total population fitness.
-double sum_fitness (const Chromosome* c1, const Chromosome* c2) { return c1->get_fitness() + c2->get_fitness(); }
-
 // Randomly select a chromosome in the population based on fitness and
 // return a pointer to that chromosome.
 Chromosome* Deme::select_parent()
 {
   int POP_SIZE = pop_.size();
   //Find total population fitness.
-  double totalFitness = std::accumulate(pop_.begin(), pop_.end(), 0, sum_fitness);
+  auto sum_fitness = [](double sum, const Chromosome* c) { return sum + c->get_fitness(); };
+  double totalFitness = std::accumulate(pop_.begin(), pop_.end(), 0.0, sum_fitness);
   //Create table of probabilities for each vector. Maintaining vector order is critical. Could also use a std::map...
-  double prob_table[POP_SIZE] = {0};
+  std::vector<double> prob_table(POP_SIZE, 0);
   //Calculate probability of selection for each Chromosome in pop_.
   //Fill the first element in the table.
   prob_table[0] = pop_[0]->get_fitness() / totalFitness;
