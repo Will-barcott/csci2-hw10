@@ -95,7 +95,7 @@ Chromosome* Deme::select_parent()
   for (int i = 1; i < POP_SIZE; i++) {
     prob_table[i] = prob_table[i-1] + (pop_[i]->get_fitness() / totalFitness);
   }
-  assert(prob_table[POP_SIZE - 1] < 1.0); //Sanity check, no probabilities > 1.
+  assert(prob_table[POP_SIZE - 1] == 1.0); //Sanity check, no probabilities > 1.
   std::uniform_real_distribution<double> distribution (0.0, totalFitness);
   //Generate random number from 0 - total fitness, and then normalize.
   double random_selection = distribution(generator_) / totalFitness;
