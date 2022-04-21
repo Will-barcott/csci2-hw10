@@ -18,6 +18,13 @@ Chromosome::Chromosome(const Cities* cities_ptr)
   assert(is_valid());
 }
 
+Chromosome::Chromosome(const Cities* cities_ptr, unsigned seed)
+  : cities_ptr_(cities_ptr),
+    order_(random_permutation(cities_ptr->size())),
+    generator_(seed)
+{
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // Clean up as necessary
 Chromosome::~Chromosome()
@@ -25,19 +32,22 @@ Chromosome::~Chromosome()
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// Perform a single mutation on this chromosome
+// Perform a single mutation on this chromosome.
+// Fill an array (buffet) from 0, number of cities in order_.
+// Shuffle buffet.
+// Pick two items from the buffet as random indices into order_.
 void
 Chromosome::mutate()
 {
-  // Add your implementation here
-  assert(order_.size() > 1); //sanity check
-  std::uniform_int_distribution<unsigned> distribution(0, order_.size()-1);
-  unsigned indexOne = distribution(generator_);
-  unsigned indexTwo = distribution(generator_);
-  while (indexOne == indexTwo){
-    indexTwo = distribution(generator_);
-  }
-  order_[indexOne], order_[indexTwo] = order_[indexTwo], order_[indexOne];
+  int ORDER_SIZE = order_.size();
+  assert(ORDER_SIZE > 1); //sanity check
+  int buffet[ORDER_SIZE];
+  std::iota(buffet, buffet+ORDER_SIZE, 0);
+  std::shuffle(buffet, buffet+ORDER_SIZE, generator_);
+  int idx_one = buffet[0];
+  int idx_two = buffet[1];
+  
+  order_[idx_one], order_[idx_two] = order_[idx_two], order_[idx_one];
   assert(is_valid());
 }
 

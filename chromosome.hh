@@ -25,6 +25,7 @@ class Chromosome {
   // Creation method for new Chromsomoe. Saves a copy of the cities and
   // generates a completely random permutation from a list of cities.
   Chromosome(const Cities*);
+  Chromosome(const Cities*, unsigned seed);
 
   // Polymorphic creation method from an existing Chromosome.
   // This method allocates memory for the newly created chromosome.
