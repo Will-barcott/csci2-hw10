@@ -66,7 +66,9 @@ Chromosome* Deme::select_parent()
   //Create table of probabilities for each vector. Maintaining vector order is critical. Could also use a std::map...
   double prob_table[POP_SIZE] = {0};
   //Calculate probability of selection for each Chromosome in pop_.
-  for (int i = 0; i < POP_SIZE; i++) {
+  //Fill the first element in the table.
+  prob_table[0] = pop_[0]->get_fitness() / totalFitness;
+  for (int i = 1; i < POP_SIZE; i++) {
     prob_table[i] = prob_table[i-1] + (pop_[i]->get_fitness() / totalFitness);
   }
   assert(prob_table[POP_SIZE - 1] < 1.0); //Sanity check, no probabilities > 1.
