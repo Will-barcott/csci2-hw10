@@ -75,7 +75,13 @@ Chromosome* Deme::select_parent()
   std::uniform_real_distribution<double> distribution (0.0, totalFitness);
   //Generate random number from 0 - total fitness, and then normalize.
   double random_selection = distribution(generator_) / totalFitness;
-  auto winner = *std::find_if(prob_table, prob_table+POP_SIZE, [](const auto i) { return i < random_selection; });
+  int winner;
+  for (int i = 0; i < POP_SIZE; i++) {
+    if (prob_table[i] < random_selection) {
+      winner = i;
+      continue;
+    }
+  }
 
   return pop_[winner];
 }
