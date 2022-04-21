@@ -55,20 +55,17 @@ Chromosome::mutate()
 std::pair<Chromosome*, Chromosome*>
 Chromosome::recombine(const Chromosome* other)
 {
-  //Generate a random index of order_ from 0 to its second to last item
-  std::uniform_int_distribution<unsigned> distribution(0, order_.size()-2);
-  unsigned lowerIndex = distribution(generator_);
-  //Generate a random index of order_ from that lower index to the maximum index
-  std::uniform_int_distribution<unsigned> distributionTwo(lowerIndex+1, order_.size());
-  unsigned higherIndex = distributionTwo(generator_);
+  std::vector<int> buffet(order_.size(), 0);
+  std::iota(buffet.begin(), buffet.end(), 0);
+  std::shuffle(buffet.begin(), buffet.end(), generator_);
+
+  int idx_one = buffet[0];
+  int idx_two = buffet[1];
+
   //Use these two indexes to crossover
-  Chromosome* childOne = create_crossover_child(this, other, lowerIndex, higherIndex);
-  Chromosome* childTwo = create_crossover_child(other, this, lowerIndex, higherIndex);
-  //sanity check
-  assert(is_valid());
-  assert(other->is_valid());
-  assert(childOne->is_valid());
-  assert(childTwo->is_valid());
+  Chromosome* childOne = create_crossover_child(this, other, idx_one, idx_two);
+  Chromosome* childTwo = create_crossover_child(other, this, idx_one, idx_two);
+
   return std::pair<Chromosome*, Chromosome*>(childOne, childTwo);
 }
 
