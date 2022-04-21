@@ -14,7 +14,7 @@
 #include <random>
 #include <algorithm>
 #include <cassert>
-
+#include <chrono>
 
 class Chromosome {
    // Disable public copying of objects for polymorphism:

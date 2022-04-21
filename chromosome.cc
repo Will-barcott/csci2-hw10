@@ -9,7 +9,7 @@
 Chromosome::Chromosome(const Cities* cities_ptr)
   : cities_ptr_(cities_ptr),
     order_(random_permutation(cities_ptr->size())),
-    generator_(rand())
+    generator_(std::chrono::system_clock::now().time_since_epoch().count())
 {
   assert(is_valid());
 }
@@ -38,10 +38,26 @@ Chromosome::mutate()
   std::vector<int> buffet(order_.size(), 0);
   std::iota(buffet.begin(), buffet.end(), 0);
   std::shuffle(buffet.begin(), buffet.end(), generator_);
+  std::cout << "Buffet: \t";
+  for (auto i : buffet) {
+    std::cout << i << ", ";
+  }
+  std::cout << "\n";
   int idx_one = buffet[0];
   int idx_two = buffet[1];
-  
-  order_[idx_one], order_[idx_two] = order_[idx_two], order_[idx_one];
+  std::cout << "Order_: \t";
+  for (auto i : order_) {
+    std::cout << i << ", ";
+  }
+  std::cout << "\n";
+  auto first = order_.at(idx_one);
+  order_.at(idx_one) = order_.at(idx_two);
+  order_.at(idx_two) = first;
+  std::cout << "order_': \t";
+  for (auto i : order_) {
+    std::cout << i << ", ";
+  }
+  std::cout << "\n";
   assert(is_valid());
 }
 
@@ -115,9 +131,9 @@ Chromosome::get_fitness() const
 bool
 Chromosome::is_valid() const
 {
-  std::vector<int> compare;
+  std::vector<int> compare(order_.size(), 0);
   std::iota(compare.begin(), compare.end(), 0);    //Fill compare sequence.
-  return std::is_permutation(compare.begin(), compare.end(), order_.end());
+  return std::is_permutation(compare.begin(), compare.end(), order_.begin());
 }
 
 // Find whether a certain value appears in a given range of the chromosome.
