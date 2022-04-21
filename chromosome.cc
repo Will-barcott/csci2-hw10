@@ -65,8 +65,7 @@ Chromosome::recombine(const Chromosome* other)
   assert(other->is_valid());
   assert(childOne->is_valid());
   assert(childTwo->is_valid());
-  std::pair<Chromosome*, Chromosome*> returnPair(childOne, childTwo);
-  return returnPair;
+  return std::pair<Chromosome*, Chromosome*>(childOne, childTwo);
 }
 
 //////////////////////////////////////////////////////////////////////////////
