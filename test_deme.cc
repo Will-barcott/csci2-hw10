@@ -1,6 +1,7 @@
 #include "deme.hh"
 #include "chromosome.hh"
 #include <sstream>
+#include <cassert>
 
 class TestDeme : public Deme {
     public:

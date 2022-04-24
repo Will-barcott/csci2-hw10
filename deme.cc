@@ -3,8 +3,13 @@
  * travelling-salesperson problem.  A deme is a population of individuals.
  */
 
-#include "chromosome.hh"
 #include "deme.hh"
+#include <algorithm>
+#include <numeric>
+#include <random>
+#include <chrono>
+#include <cassert>
+#include <iostream>
 
 // Generate a Deme of the specified size with all-random chromosomes.
 // Also receives a mutation rate in the range [0-1].

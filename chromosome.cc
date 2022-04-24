@@ -3,6 +3,9 @@
  */
 
 #include "chromosome.hh"
+#include <algorithm>
+#include <cassert>
+#include <chrono>
 
 //////////////////////////////////////////////////////////////////////////////
 // Generate a completely random permutation from a list of cities
@@ -12,13 +15,6 @@ Chromosome::Chromosome(const Cities* cities_ptr)
     generator_(std::chrono::system_clock::now().time_since_epoch().count())
 {
   assert(is_valid());
-}
-
-Chromosome::Chromosome(const Cities* cities_ptr, unsigned seed)
-  : cities_ptr_(cities_ptr),
-    order_(random_permutation(cities_ptr->size())),
-    generator_(seed)
-{
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -55,6 +51,9 @@ Chromosome::mutate()
 std::pair<Chromosome*, Chromosome*>
 Chromosome::recombine(const Chromosome* other)
 {
+  assert(is_valid());
+  assert(other->is_valid());
+
   std::vector<int> buffet(order_.size(), 0);
   std::iota(buffet.begin(), buffet.end(), 0);
   std::shuffle(buffet.begin(), buffet.end(), generator_);

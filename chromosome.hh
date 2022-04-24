@@ -12,13 +12,10 @@
 
 #include "cities.hh"
 #include <random>
-#include <algorithm>
-#include <cassert>
-#include <chrono>
 
 class Chromosome {
    // Disable public copying of objects for polymorphism:
-  Chromosome(const Chromosome&) = delete;
+  //Chromosome(const Chromosome&) = delete;
   Chromosome(Chromosome&&) = delete;
   Chromosome& operator=(const Chromosome&) = delete;
   Chromosome& operator=(Chromosome&&) = delete;
@@ -27,14 +24,13 @@ class Chromosome {
   // Creation method for new Chromsomoe. Saves a copy of the cities and
   // generates a completely random permutation from a list of cities.
   Chromosome(const Cities*);
-  Chromosome(const Cities*, unsigned seed);
 
   // Polymorphic creation method from an existing Chromosome.
   // This method allocates memory for the newly created chromosome.
   // It is the caller's responsibility to free this memory.
   virtual Chromosome* clone() const
   {
-    return new Chromosome(cities_ptr_);
+    return new Chromosome(*this); 
   }
 
   // Clean up as necessary
@@ -66,6 +62,8 @@ class Chromosome {
   }
 
  protected:
+  Chromosome(const Chromosome&) = default;
+
   // For an ordered set of parents, return a child using the ordered crossover.
   // The child will have the same values as p1 in the range [begin,end),
   // and all the other values in the same order as in p2.

@@ -1,6 +1,8 @@
 #include "chromosome.hh"
 #include <sstream>
 #include <iostream>
+#include <cassert>
+#include <algorithm>
 
 class TestChromosome : public Chromosome {
     public:
